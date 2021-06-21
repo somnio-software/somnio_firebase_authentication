@@ -1,0 +1,26 @@
+name: somnio_firebase_authentication
+description: Somnio's firebase authentication package.
+version: 0.0.1
+author:
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_auth: ^1.0.1
+  firebase_auth_web:
+  google_sign_in: ^4.5.9
+  sign_in_with_apple: ^3.0.0
+  crypto: ^2.1.5
+  flutter_facebook_auth: ^3.3.3-no-nullsafety
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+# The following section is specific to Flutter.
+flutter:
