@@ -1,4 +1,5 @@
-part of somnio_firebase_authentication;
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthService {
   Stream<User> get onAuthStateChanged;

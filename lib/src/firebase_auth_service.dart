@@ -1,4 +1,12 @@
-part of somnio_firebase_authentication;
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import './sign_in_services/apple/apple_sign_in_service.dart';
+import './sign_in_services/facebook/facebook_sign_in_service.dart';
+import './sign_in_services/google/googe_sign_in_service.dart';
+import './sign_in_services/sign_in_service.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'auth_service.dart';
 
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _firebaseAuth;
