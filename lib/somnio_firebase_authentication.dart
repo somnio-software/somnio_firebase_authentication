@@ -10,8 +10,7 @@ import 'src/sign_in_services/sign_in_service.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-export 'package:somnio_firebase_authentication/somnio_firebase_authentication.dart'
-    show AuthService, FirebaseAuthService;
+export 'package:firebase_auth/firebase_auth.dart';
 
 part 'src/auth_service.dart';
 part 'src/firebase_auth_service.dart';
