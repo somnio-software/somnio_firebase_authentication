@@ -2,11 +2,11 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mockito/mockito.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
+// import 'package:somnio_firebase_authentication/somnio_firebase_authentication.dart';
+// import 'package:somnio_firebase_authentication/src/sign_in_services/apple/apple_credentials.dart';
+// import 'package:somnio_firebase_authentication/src/sign_in_services/apple/apple_sign_in_service.dart';
+// import 'package:somnio_firebase_authentication/src/sign_in_services/facebook/facebook_sign_in_service.dart';
 import 'package:somnio_firebase_authentication/somnio_firebase_authentication.dart';
-import 'package:somnio_firebase_authentication/src/sign_in_services/apple/apple_credentials.dart';
-import 'package:somnio_firebase_authentication/src/sign_in_services/apple/apple_sign_in_service.dart';
-import 'package:somnio_firebase_authentication/src/sign_in_services/facebook/facebook_sign_in_service.dart';
-import 'package:somnio_firebase_authentication/src/sign_in_services/google/google_sign_in_service.dart';
 
 class MockFirebaseAuth extends Mock implements Auth.FirebaseAuth {}
 
