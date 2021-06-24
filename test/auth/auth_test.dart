@@ -28,7 +28,7 @@ void main() async {
 
   group('Firebase auth /', () {
     test('Sign in with email and password', () async {
-      final authService = FirebaseAuthService(auth);
+      final authService = FirebaseAuthService(firebaseAuth: auth);
 
       when(auth.signInWithEmailAndPassword(
               email: 'email', password: 'password'))
@@ -41,7 +41,7 @@ void main() async {
     });
 
     test('Current user', () async {
-      final authService = FirebaseAuthService(auth);
+      final authService = FirebaseAuthService(firebaseAuth: auth);
 
       when(auth.currentUser).thenAnswer((_) => firebaseUser);
 
@@ -51,7 +51,7 @@ void main() async {
     });
 
     test('Anonymous sign in', () async {
-      final authService = FirebaseAuthService(auth);
+      final authService = FirebaseAuthService(firebaseAuth: auth);
 
       when(auth.signInAnonymously()).thenAnswer((_) async => userCredential);
 
@@ -61,7 +61,7 @@ void main() async {
     });
 
     test('Change profile', () async {
-      final authService = FirebaseAuthService(auth);
+      final authService = FirebaseAuthService(firebaseAuth: auth);
       final user = MockFirebaseUser();
 
       when(auth.currentUser).thenAnswer((_) => user);
@@ -76,7 +76,7 @@ void main() async {
     });
 
     test('Delete account', () async {
-      final authService = FirebaseAuthService(auth);
+      final authService = FirebaseAuthService(firebaseAuth: auth);
       final user = MockFirebaseUser();
 
       when(user.delete()).thenAnswer((_) => null);
@@ -90,8 +90,8 @@ void main() async {
   group('Google Sign in /', () {
     test('Success', () async {
       final _googleSignInService = MockGoogleSignInService();
-      final authService =
-          FirebaseAuthService(auth, testingService: _googleSignInService);
+      final authService = FirebaseAuthService(
+          firebaseAuth: auth, testingService: _googleSignInService);
       final credential = Auth.GoogleAuthProvider.credential(
         idToken: 'abcd1234',
         accessToken: 'abcd1234',
@@ -109,7 +109,7 @@ void main() async {
     });
 
     test('Cancelled by user', () async {
-      final authService = FirebaseAuthService(auth);
+      final authService = FirebaseAuthService(firebaseAuth: auth);
       when(googleSignIn.signIn()).thenAnswer((_) => null);
 
       expect(
@@ -120,8 +120,8 @@ void main() async {
   group('Facebook sign in /', () {
     test('Success', () async {
       final _facebookSignInService = MockFacebookSignInService();
-      final authService =
-          FirebaseAuthService(auth, testingService: _facebookSignInService);
+      final authService = FirebaseAuthService(
+          firebaseAuth: auth, testingService: _facebookSignInService);
 
       final credential = Auth.FacebookAuthProvider.credential('abcd1234');
 
@@ -138,8 +138,8 @@ void main() async {
 
     test('Cancelled by user', () async {
       final _facebookSignInService = MockFacebookSignInService();
-      final authService =
-          FirebaseAuthService(auth, testingService: _facebookSignInService);
+      final authService = FirebaseAuthService(
+          firebaseAuth: auth, testingService: _facebookSignInService);
 
       when(_facebookSignInService.getFirebaseCredential())
           .thenAnswer((_) async => null);
@@ -151,8 +151,8 @@ void main() async {
   group('Apple sign in /', () {
     test('Success', () async {
       final _appleSignInService = MockAppleSignInService();
-      final authService =
-          FirebaseAuthService(auth, testingService: _appleSignInService);
+      final authService = FirebaseAuthService(
+          firebaseAuth: auth, testingService: _appleSignInService);
 
       final credential = Auth.OAuthProvider('apple.com').credential(
         idToken: 'abcd1234',
@@ -172,8 +172,8 @@ void main() async {
 
     test('Cancelled by user', () async {
       final _appleSignInService = MockAppleSignInService();
-      final authService =
-          FirebaseAuthService(auth, testingService: _appleSignInService);
+      final authService = FirebaseAuthService(
+          firebaseAuth: auth, testingService: _appleSignInService);
 
       when(_appleSignInService.getFirebaseCredential())
           .thenAnswer((_) async => null);

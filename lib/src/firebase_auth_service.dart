@@ -8,12 +8,14 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthService implements AuthService {
-  final FirebaseAuth _firebaseAuth;
+  FirebaseAuth _firebaseAuth;
   SignInService _signInMethod;
   SignInService _testingService;
 
-  FirebaseAuthService(this._firebaseAuth, {SignInService testingService}) {
+  FirebaseAuthService(
+      {FirebaseAuth firebaseAuth, SignInService testingService}) {
     _testingService = testingService;
+    _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
   }
 
   @override
