@@ -22,6 +22,9 @@ class FirebaseAuthService implements AuthService {
   Stream<User> get onAuthStateChanged => _firebaseAuth.authStateChanges();
 
   @override
+  Stream<User> get onUserChanged => _firebaseAuth.userChanges();
+
+  @override
   Future<User> currentUser() async {
     return _firebaseAuth.currentUser;
   }

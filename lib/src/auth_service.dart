@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthService {
   Stream<User> get onAuthStateChanged;
+  Stream<User> get onUserChanged;
+
   Future<User> currentUser();
   Future<User> signInAnonymously();
   Future<User> signInWithEmailAndPassword(String email, String password);
