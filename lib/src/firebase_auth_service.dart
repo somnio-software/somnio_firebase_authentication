@@ -1,4 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/email_already_in_use.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/invalid_credential.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/invalid_email.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/operation_not_allowed.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/requires_recent_login.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/unexpected.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/user_disabled.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/user_not_found.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/weak_password.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/wrong_password.dart';
 import '../src/sign_in_services/sign_in_service.dart';
 import './auth_service.dart';
 import './sign_in_services/apple/apple_sign_in_service.dart';
@@ -31,17 +41,59 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<User> signInAnonymously() async {
-    final userCredential = await _firebaseAuth.signInAnonymously();
-    return userCredential.user;
+    try {
+      final userCredential = await _firebaseAuth.signInAnonymously();
+      return userCredential.user;
+    } on FirebaseAuthException catch (exception) {
+      if (exception.code == 'operation-not-allowed') {
+        throw OperationNotAllowedException(
+          code: 'sia_operation_not_allowed',
+          message: 'This operation is not allowed',
+        );
+      }
+      throw UnexpectedException();
+    }
   }
 
   @override
   Future<User> signInWithEmailAndPassword(String email, String password) async {
-    final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    return userCredential.user;
+    try {
+      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return userCredential.user;
+    } on FirebaseAuthException catch (exception) {
+      switch (exception.code) {
+        case 'invalid-email':
+          throw InvalidEmailException(
+            code: 'siweap_invalid_email',
+            message: 'Invalid email',
+          );
+          break;
+        case 'user-disabled':
+          throw UserDisabledException(
+            code: 'siweap_user_disabled',
+            message: 'This user is disabled',
+          );
+          break;
+        case 'user-not-found':
+          throw UserNotFoundException(
+            code: 'siweap_user_not_found',
+            message: 'A user corresponding to the given email does not exist',
+          );
+          break;
+        case 'wrong-password':
+          throw WrongPasswordException(
+            code: 'siweap_wrong_password',
+            message: 'Wrong password',
+          );
+          break;
+        default:
+          throw UnexpectedException();
+          break;
+      }
+    }
   }
 
   @override
@@ -61,24 +113,95 @@ class FirebaseAuthService implements AuthService {
       );
       await userCredential.user.reload();
       return _firebaseAuth.currentUser;
-    } catch (error) {
-      throw error;
+    } on FirebaseAuthException catch (exception) {
+      switch (exception.code) {
+        case 'email-already-in-use':
+          throw EmailInUseException(
+            code: 'cuweap_email_already_in_use',
+            message: 'An user for this email already exists',
+          );
+          break;
+        case 'invalid-email':
+          throw InvalidEmailException(
+            code: 'cuweap_invalid_email',
+            message: 'Invalid email',
+          );
+          break;
+        case 'operation-not-allowed':
+          throw OperationNotAllowedException(
+            code: 'cuweap_operation_not_allowed',
+            message: 'Operation not allowed',
+          );
+          break;
+        case 'weak-password':
+          throw WeakPasswordException(
+            code: 'cuweap_weak_password',
+            message: 'The password is too weak',
+          );
+          break;
+        default:
+          throw UnexpectedException();
+          break;
+      }
     }
   }
 
   @override
   Future<void> sendPasswordResetEmail(String email) async {
-    await _firebaseAuth.sendPasswordResetEmail(email: email);
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on Exception {
+      throw UnexpectedException();
+    }
   }
 
   Future<User> _signInWithAService(SignInService service) async {
     final firebaseCredential = await service.getFirebaseCredential();
     if (firebaseCredential != null) {
-      final userCredential = await _firebaseAuth.signInWithCredential(
-        firebaseCredential,
-      );
-      _signInMethod = service;
-      return userCredential.user;
+      try {
+        final userCredential = await _firebaseAuth.signInWithCredential(
+          firebaseCredential,
+        );
+        _signInMethod = service;
+        return userCredential.user;
+      } on FirebaseAuthException catch (exception) {
+        switch (exception.code) {
+          case 'invalid-credential':
+            throw InvalidCredentialException(
+              code: 'siwas_invalid_credential',
+              message: 'Invalid credential',
+            );
+            break;
+          case 'operation-not-allowed':
+            throw OperationNotAllowedException(
+              code: 'siwas_operation_not_allowed',
+              message: 'Operation not allowed',
+            );
+            break;
+          case 'user-disabled':
+            throw UserDisabledException(
+              code: 'siwas_user_disabled',
+              message: 'This user is disabled',
+            );
+            break;
+          case 'user-not-found':
+            throw UserNotFoundException(
+              code: 'siwas_user_not_found',
+              message:
+                  'A user corresponding to the given credential does not exist',
+            );
+            break;
+          case 'wrong-password':
+            throw WrongPasswordException(
+              code: 'siwas_wrong_password',
+              message: 'Wrong password',
+            );
+            break;
+          default:
+            throw UnexpectedException();
+            break;
+        }
+      }
     }
     return null;
   }
@@ -105,9 +228,13 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<void> signOut() async {
-    await _signInMethod?.signOut();
-    _signInMethod = null;
-    await _firebaseAuth.signOut();
+    try {
+      await _signInMethod?.signOut();
+      _signInMethod = null;
+      await _firebaseAuth.signOut();
+    } on Exception {
+      throw UnexpectedException();
+    }
   }
 
   @override
@@ -120,8 +247,8 @@ class FirebaseAuthService implements AuthService {
         await user.updatePhotoURL(photoURL);
       }
       return true;
-    } catch (e) {
-      throw e;
+    } on Exception {
+      throw UnexpectedException();
     }
   }
 
@@ -131,8 +258,18 @@ class FirebaseAuthService implements AuthService {
       final user = _firebaseAuth.currentUser;
       await user.delete();
       return true;
-    } catch (e) {
-      throw e;
+    } on FirebaseAuthException catch (exception) {
+      switch (exception.code) {
+        case 'requires-recent-login':
+          throw RequiresRecentLoginException(
+            code: 'da_requires_recent_login',
+            message: 'Requires recent login',
+          );
+          break;
+        default:
+          throw UnexpectedException();
+          break;
+      }
     }
   }
 }
