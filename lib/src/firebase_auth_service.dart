@@ -36,7 +36,11 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<User> currentUser() async {
-    return _firebaseAuth.currentUser;
+    try {
+      return _firebaseAuth.currentUser;
+    } on Exception catch (_) {
+      throw UnexpectedException();
+    }
   }
 
   @override
