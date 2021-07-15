@@ -163,10 +163,10 @@ class FirebaseAuthService implements AuthService {
       switch (exception.code) {
         case 'user-not-found':
           throw PasswordResetUserNotFoundException(
-            message: 'An user for this email already exists',
+            message: 'There is no user corresponding to the given email',
           );
           break;
-        case 'auth/invalid-email':
+        case 'invalid-email':
           throw PasswordResetInvalidEmailException(
             message: 'Invalid email',
           );
