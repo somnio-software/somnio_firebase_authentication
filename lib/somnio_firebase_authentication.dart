@@ -33,4 +33,8 @@ export 'src/exceptions/sign_up/sign_up_invalid_email.dart';
 export 'src/exceptions/sign_up/sign_up_operation_not_allowed.dart';
 export 'src/exceptions/sign_up/sign_up_weak_password.dart';
 
+export 'src/exceptions/password_reset/password_reset.dart';
+export 'src/exceptions/password_reset/password_reset_invalid_email.dart';
+export 'src/exceptions/password_reset/password_reset_user_not_found.dart';
+
 export 'src/exceptions/unexpected.dart';

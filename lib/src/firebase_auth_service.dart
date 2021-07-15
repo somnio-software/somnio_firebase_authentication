@@ -3,6 +3,8 @@ import 'package:somnio_firebase_authentication/src/exceptions/credentials/creden
 import 'package:somnio_firebase_authentication/src/exceptions/credentials/credentials_user_disabled.dart';
 import 'package:somnio_firebase_authentication/src/exceptions/credentials/credentials_user_not_found.dart';
 import 'package:somnio_firebase_authentication/src/exceptions/credentials/credentials_wrong_password.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/password_reset/password_reset_invalid_email.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/password_reset/password_reset_user_not_found.dart';
 import 'package:somnio_firebase_authentication/src/exceptions/sign_in_anonymously/anonymous_sign_in_operation_not_allowed.dart';
 import 'package:somnio_firebase_authentication/src/exceptions/sign_up/sign_up_email_already_in_use.dart';
 import 'package:somnio_firebase_authentication/src/exceptions/credentials/credentials_invalid_credential.dart';
@@ -157,8 +159,22 @@ class FirebaseAuthService implements AuthService {
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
-    } on Exception {
-      throw UnexpectedException();
+    } on FirebaseAuthException catch (exception) {
+      switch (exception.code) {
+        case 'auth/user-not-found':
+          throw PasswordResetUserNotFoundException(
+            message: 'An user for this email already exists',
+          );
+          break;
+        case 'auth/invalid-email':
+          throw PasswordResetInvalidEmailException(
+            message: 'Invalid email',
+          );
+          break;
+        default:
+          throw UnexpectedException();
+          break;
+      }
     }
   }
 
