@@ -161,7 +161,7 @@ class FirebaseAuthService implements AuthService {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
-        case 'auth/user-not-found':
+        case 'user-not-found':
           throw PasswordResetUserNotFoundException(
             message: 'An user for this email already exists',
           );
