@@ -1,14 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:somnio_firebase_authentication/src/exceptions/email_already_in_use.dart';
-import 'package:somnio_firebase_authentication/src/exceptions/invalid_credential.dart';
-import 'package:somnio_firebase_authentication/src/exceptions/invalid_email.dart';
-import 'package:somnio_firebase_authentication/src/exceptions/operation_not_allowed.dart';
-import 'package:somnio_firebase_authentication/src/exceptions/requires_recent_login.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/credentials/credentials_operation_not_allowed.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/credentials/credentials_user_disabled.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/credentials/credentials_user_not_found.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/credentials/credentials_wrong_password.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_in_anonymously/anonymous_sign_in_operation_not_allowed.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_up/sign_up_email_already_in_use.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/credentials/credentials_invalid_credential.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_in/sign_in_invalid_email.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_in/sign_in_operation_not_allowed.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/delete_account/delete_account_requires_recent_login.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_up/sign_up_operation_not_allowed.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_up/sign_up_invalid_email.dart';
 import 'package:somnio_firebase_authentication/src/exceptions/unexpected.dart';
-import 'package:somnio_firebase_authentication/src/exceptions/user_disabled.dart';
-import 'package:somnio_firebase_authentication/src/exceptions/user_not_found.dart';
-import 'package:somnio_firebase_authentication/src/exceptions/weak_password.dart';
-import 'package:somnio_firebase_authentication/src/exceptions/wrong_password.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_in/sign_in_user_disabled.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_in/sign_in_user_not_found.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_up/sign_up_weak_password.dart';
+import 'package:somnio_firebase_authentication/src/exceptions/sign_in/sign_in_wrong_password.dart';
 import '../src/sign_in_services/sign_in_service.dart';
 import './auth_service.dart';
 import './sign_in_services/apple/apple_sign_in_service.dart';
@@ -50,8 +57,7 @@ class FirebaseAuthService implements AuthService {
       return userCredential.user;
     } on FirebaseAuthException catch (exception) {
       if (exception.code == 'operation-not-allowed') {
-        throw OperationNotAllowedException(
-          code: 'sia_operation_not_allowed',
+        throw SignInAnonymouslyOperationNotAllowedException(
           message: 'This operation is not allowed',
         );
       }
@@ -70,27 +76,28 @@ class FirebaseAuthService implements AuthService {
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
         case 'invalid-email':
-          throw InvalidEmailException(
-            code: 'siweap_invalid_email',
+          throw SignInInvalidEmailException(
             message: 'Invalid email',
           );
           break;
         case 'user-disabled':
-          throw UserDisabledException(
-            code: 'siweap_user_disabled',
+          throw SignInUserDisabledException(
             message: 'This user is disabled',
           );
           break;
         case 'user-not-found':
-          throw UserNotFoundException(
-            code: 'siweap_user_not_found',
+          throw SignInUserNotFoundException(
             message: 'A user corresponding to the given email does not exist',
           );
           break;
         case 'wrong-password':
-          throw WrongPasswordException(
-            code: 'siweap_wrong_password',
+          throw SignInWrongPasswordException(
             message: 'Wrong password',
+          );
+          break;
+        case 'operation-not-allowed':
+          throw SignInOperationNotAllowedException(
+            message: 'Operation not allowed',
           );
           break;
         default:
@@ -120,26 +127,22 @@ class FirebaseAuthService implements AuthService {
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
         case 'email-already-in-use':
-          throw EmailInUseException(
-            code: 'cuweap_email_already_in_use',
+          throw SignUpEmailInUseException(
             message: 'An user for this email already exists',
           );
           break;
         case 'invalid-email':
-          throw InvalidEmailException(
-            code: 'cuweap_invalid_email',
+          throw SignUpInvalidEmailException(
             message: 'Invalid email',
           );
           break;
         case 'operation-not-allowed':
-          throw OperationNotAllowedException(
-            code: 'cuweap_operation_not_allowed',
+          throw SignUpOperationNotAllowedException(
             message: 'Operation not allowed',
           );
           break;
         case 'weak-password':
-          throw WeakPasswordException(
-            code: 'cuweap_weak_password',
+          throw SignUpWeakPasswordException(
             message: 'The password is too weak',
           );
           break;
@@ -171,33 +174,28 @@ class FirebaseAuthService implements AuthService {
       } on FirebaseAuthException catch (exception) {
         switch (exception.code) {
           case 'invalid-credential':
-            throw InvalidCredentialException(
-              code: 'siwas_invalid_credential',
+            throw CredentialsInvalidException(
               message: 'Invalid credential',
             );
             break;
           case 'operation-not-allowed':
-            throw OperationNotAllowedException(
-              code: 'siwas_operation_not_allowed',
+            throw CredentialsOperationNotAllowedException(
               message: 'Operation not allowed',
             );
             break;
           case 'user-disabled':
-            throw UserDisabledException(
-              code: 'siwas_user_disabled',
+            throw CredentialsUserDisabledException(
               message: 'This user is disabled',
             );
             break;
           case 'user-not-found':
-            throw UserNotFoundException(
-              code: 'siwas_user_not_found',
+            throw CredentialsUserNotFoundException(
               message:
                   'A user corresponding to the given credential does not exist',
             );
             break;
           case 'wrong-password':
-            throw WrongPasswordException(
-              code: 'siwas_wrong_password',
+            throw CredentialsWrongPasswordException(
               message: 'Wrong password',
             );
             break;
@@ -265,8 +263,7 @@ class FirebaseAuthService implements AuthService {
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
         case 'requires-recent-login':
-          throw RequiresRecentLoginException(
-            code: 'da_requires_recent_login',
+          throw DeleteAccountRequiresRecentLoginException(
             message: 'Requires recent login',
           );
           break;
