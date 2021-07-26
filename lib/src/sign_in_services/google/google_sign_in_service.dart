@@ -5,9 +5,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
 
 class GoogleSignInService implements SignInService {
-  GoogleSignIn _parameterInstance;
+  GoogleSignIn? _parameterInstance;
 
-  GoogleSignInService({GoogleSignIn signInMethod}) {
+  GoogleSignInService({GoogleSignIn? signInMethod}) {
     _parameterInstance = signInMethod;
   }
 
@@ -15,20 +15,18 @@ class GoogleSignInService implements SignInService {
     return _parameterInstance ?? GoogleSignIn();
   }
 
-  Future<GoogleSignInAccount> _getGoogleUser() {
+  Future<GoogleSignInAccount?> _getGoogleUser() {
     final googleSignIn = _generateGoogleSignInInstance();
     return googleSignIn.signIn();
   }
 
   Future<GoogleSignInAuthentication> _getGoogleAuth(
-      GoogleSignInAccount googleUser) {
-    if (googleUser != null) {
-      return googleUser.authentication;
-    }
-    return null;
+      GoogleSignInAccount? googleUser) {
+    return googleUser!.authentication;
   }
 
-  Auth.OAuthCredential _getUserCredentials(String accessToken, String idToken) {
+  Auth.OAuthCredential _getUserCredentials(
+      String? accessToken, String? idToken) {
     if (accessToken != null || idToken != null) {
       final credential = Auth.GoogleAuthProvider.credential(
         idToken: idToken,
@@ -44,11 +42,11 @@ class GoogleSignInService implements SignInService {
   }
 
   @override
-  Future<Auth.OAuthCredential> getFirebaseCredential() async {
+  Future<Auth.OAuthCredential?> getFirebaseCredential() async {
     try {
       final googleUser = await _getGoogleUser();
-      final googleAuth = await _getGoogleAuth(googleUser);
-      if (googleAuth != null) {
+      if (googleUser != null) {
+        final googleAuth = await _getGoogleAuth(googleUser);
         return _getUserCredentials(googleAuth.accessToken, googleAuth.idToken);
       }
       return null;

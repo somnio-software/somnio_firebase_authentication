@@ -2,5 +2,5 @@ class CredentialsException implements Exception {
   String code;
   String message;
 
-  CredentialsException({this.code, this.message});
+  CredentialsException({required this.code, required this.message});
 }

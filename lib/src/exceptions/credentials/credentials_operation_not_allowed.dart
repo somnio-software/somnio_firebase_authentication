@@ -4,5 +4,5 @@ class CredentialsOperationNotAllowedException implements CredentialsException {
   String code = 'siwas_operation_not_allowed';
   String message;
 
-  CredentialsOperationNotAllowedException({this.message});
+  CredentialsOperationNotAllowedException({required this.message});
 }

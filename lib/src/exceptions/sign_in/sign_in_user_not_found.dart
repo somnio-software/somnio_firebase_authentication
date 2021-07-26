@@ -4,5 +4,5 @@ class SignInUserNotFoundException implements SignInException {
   String code = 'siweap_user_not_found';
   String message;
 
-  SignInUserNotFoundException({this.message});
+  SignInUserNotFoundException({required this.message});
 }

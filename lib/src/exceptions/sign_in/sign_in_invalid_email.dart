@@ -4,5 +4,5 @@ class SignInInvalidEmailException implements SignInException {
   String code = 'siweap_invalid_email';
   String message;
 
-  SignInInvalidEmailException({this.message});
+  SignInInvalidEmailException({required this.message});
 }

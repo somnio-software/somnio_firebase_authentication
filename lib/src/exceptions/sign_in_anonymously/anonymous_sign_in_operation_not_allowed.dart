@@ -5,5 +5,5 @@ class SignInAnonymouslyOperationNotAllowedException
   String code = 'sia_operation_not_allowed';
   String message;
 
-  SignInAnonymouslyOperationNotAllowedException({this.message});
+  SignInAnonymouslyOperationNotAllowedException({required this.message});
 }

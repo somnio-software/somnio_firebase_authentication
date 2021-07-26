@@ -20,7 +20,17 @@ class MockUserCredential extends Mock implements Auth.UserCredential {}
 
 class MockGoogleSignIn extends Mock implements GoogleSignIn {}
 
-class MockGoogleSignInAccount extends Mock implements GoogleSignInAccount {}
+mixin LegacyEquality {
+  @override
+  bool operator ==(dynamic other) => throw UnimplementedError();
+
+  @override
+  int get hashCode => throw UnimplementedError();
+}
+
+class MockGoogleSignInAccount extends Mock
+    with LegacyEquality
+    implements GoogleSignInAccount {}
 
 class MockGoogleSignInAuthentication extends Mock
     implements GoogleSignInAuthentication {}

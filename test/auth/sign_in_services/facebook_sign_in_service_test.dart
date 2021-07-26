@@ -1,56 +1,63 @@
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:somnio_firebase_authentication/src/sign_in_services/facebook/facebook_sign_in_service.dart';
-import '.././mocks/auth_mocks.dart';
 import 'package:mockito/mockito.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
 
+import 'facebook_sign_in_service_test.mocks.dart';
+
+@GenerateMocks([
+  FacebookAuth,
+  LoginResult,
+  AccessToken,
+])
 void main() {
   group('Facebook sign in service /', () {
-    FacebookAuth _facebook;
-    LoginResult _loginResult;
-    AccessToken _accessToken;
-    FacebookSignInService _facebookSignInService;
+    FacebookAuth? _facebook;
+    LoginResult? _loginResult;
+    AccessToken? _accessToken;
+    FacebookSignInService? _facebookSignInService;
 
     setUp(() {
-      _facebook = MockFacebookLogin();
-      _loginResult = MockFacebookLoginResult();
-      _accessToken = MockFacebookAccessToken();
+      _facebook = MockFacebookAuth();
+      _loginResult = MockLoginResult();
+      _accessToken = MockAccessToken();
       _facebookSignInService = FacebookSignInService(signInMethod: _facebook);
 
-      when(_facebook.login(loginBehavior: LoginBehavior.nativeWithFallback))
-          .thenAnswer((_) async => _loginResult);
+      when(_facebook!.login(loginBehavior: LoginBehavior.nativeWithFallback))
+          .thenAnswer((_) async => _loginResult!);
     });
 
     test('Success', () async {
-      when(_loginResult.status).thenReturn(LoginStatus.success);
+      when(_loginResult!.status).thenReturn(LoginStatus.success);
 
-      when(_loginResult.accessToken).thenReturn(_accessToken);
+      when(_loginResult!.accessToken).thenReturn(_accessToken);
 
-      when(_accessToken.token).thenReturn('abcd1234');
+      when(_accessToken!.token).thenReturn('abcd1234');
 
       final credential = Auth.FacebookAuthProvider.credential('abcd1234');
 
       final obtainedCredential =
-          await _facebookSignInService.getFirebaseCredential();
+          await _facebookSignInService!.getFirebaseCredential();
 
-      expect(obtainedCredential.accessToken, credential.accessToken);
+      expect(obtainedCredential!.accessToken, credential.accessToken);
     });
 
     test('Cancelled by user', () async {
-      when(_loginResult.status).thenReturn(LoginStatus.cancelled);
+      when(_loginResult!.status).thenReturn(LoginStatus.cancelled);
 
-      expect(await _facebookSignInService.getFirebaseCredential(), null);
+      expect(await _facebookSignInService!.getFirebaseCredential(), null);
     });
 
     test('Facebook Error', () async {
       const error = 'error';
 
-      when(_loginResult.status).thenReturn(LoginStatus.failed);
+      when(_loginResult!.status).thenReturn(LoginStatus.failed);
 
-      when(_loginResult.message).thenReturn(error);
+      when(_loginResult!.message).thenReturn(error);
 
-      expect(_facebookSignInService.getFirebaseCredential(), throwsException);
+      expect(_facebookSignInService!.getFirebaseCredential(), throwsException);
     });
   });
 }

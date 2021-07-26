@@ -5,5 +5,5 @@ class DeleteAccountRequiresRecentLoginException
   String code = 'da_requires_recent_login';
   String message;
 
-  DeleteAccountRequiresRecentLoginException({this.message});
+  DeleteAccountRequiresRecentLoginException({required this.message});
 }

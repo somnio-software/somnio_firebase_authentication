@@ -7,9 +7,9 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Auth;
 
 class AppleSignInService implements SignInService {
-  AppleCredentials _parameterInstance;
+  AppleCredentials? _parameterInstance;
 
-  AppleSignInService({AppleCredentials signInMethod}) {
+  AppleSignInService({AppleCredentials? signInMethod}) {
     _parameterInstance = signInMethod;
   }
 
@@ -32,8 +32,8 @@ class AppleSignInService implements SignInService {
   }
 
   @override
-  Future<Auth.OAuthCredential> getFirebaseCredential(
-      {String testingNonce}) async {
+  Future<Auth.OAuthCredential?> getFirebaseCredential(
+      {String? testingNonce}) async {
     final rawNonce = _generateNonce();
     final nonce = _sha256ofString(rawNonce);
     final credentialsGetter = _generateAppleCredentialsInstance();
@@ -58,6 +58,6 @@ class AppleSignInService implements SignInService {
 
   @override
   Future<void> signOut() {
-    return null;
+    throw UnimplementedError();
   }
 }

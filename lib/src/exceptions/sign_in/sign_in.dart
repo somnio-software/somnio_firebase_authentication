@@ -2,5 +2,5 @@ class SignInException implements Exception {
   String code;
   String message;
 
-  SignInException({this.code, this.message});
+  SignInException({required this.code, required this.message});
 }

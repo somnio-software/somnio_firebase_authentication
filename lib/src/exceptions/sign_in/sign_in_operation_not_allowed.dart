@@ -4,5 +4,5 @@ class SignInOperationNotAllowedException implements SignInException {
   String code = 'siweap_operation_not_allowed';
   String message;
 
-  SignInOperationNotAllowedException({this.message});
+  SignInOperationNotAllowedException({required this.message});
 }

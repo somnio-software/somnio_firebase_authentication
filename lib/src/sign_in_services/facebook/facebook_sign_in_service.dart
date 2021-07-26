@@ -3,15 +3,21 @@ import '../sign_in_service.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class FacebookSignInService implements SignInService {
-  FacebookAuth _facebookServices;
+  FacebookAuth? _parameterInstance;
 
-  FacebookSignInService({FacebookAuth signInMethod}) {
-    _facebookServices = signInMethod ?? FacebookAuth.instance;
+  FacebookSignInService({FacebookAuth? signInMethod}) {
+    _parameterInstance = signInMethod;
+  }
+
+  FacebookAuth _generateFacebookAuthInstance() {
+    return _parameterInstance ?? FacebookAuth.instance;
   }
 
   Future<LoginResult> _facebookSignIn() {
-    return _facebookServices.login(
-        loginBehavior: LoginBehavior.nativeWithFallback);
+    final facebookAuthInstance = _generateFacebookAuthInstance();
+    return facebookAuthInstance.login(
+      loginBehavior: LoginBehavior.nativeWithFallback,
+    );
   }
 
   Auth.OAuthCredential _createFirebaseCredential(String facebookToken) {
@@ -19,11 +25,11 @@ class FacebookSignInService implements SignInService {
   }
 
   @override
-  Future<Auth.OAuthCredential> getFirebaseCredential() async {
+  Future<Auth.OAuthCredential?> getFirebaseCredential() async {
     final result = await _facebookSignIn();
     switch (result.status) {
       case LoginStatus.success:
-        final accessToken = result.accessToken.token;
+        final accessToken = result.accessToken!.token;
         return _createFirebaseCredential(accessToken);
       case LoginStatus.cancelled:
         return null;
@@ -39,6 +45,7 @@ class FacebookSignInService implements SignInService {
 
   @override
   Future<void> signOut() async {
-    await _facebookServices.logOut();
+    final facebookAuthInstance = _generateFacebookAuthInstance();
+    await facebookAuthInstance.logOut();
   }
 }

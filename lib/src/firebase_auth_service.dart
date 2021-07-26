@@ -27,26 +27,26 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthService implements AuthService {
-  FirebaseAuth _firebaseAuth;
-  SignInService _signInMethod;
-  SignInService _testingService;
+  FirebaseAuth? _firebaseAuth;
+  SignInService? _signInMethod;
+  SignInService? _testingService;
 
   FirebaseAuthService(
-      {FirebaseAuth firebaseAuth, SignInService testingService}) {
+      {FirebaseAuth? firebaseAuth, SignInService? testingService}) {
     _testingService = testingService;
     _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
   }
 
   @override
-  Stream<User> get onAuthStateChanged => _firebaseAuth.authStateChanges();
+  Stream<User?> get onAuthStateChanged => _firebaseAuth!.authStateChanges();
 
   @override
-  Stream<User> get onUserChanged => _firebaseAuth.userChanges();
+  Stream<User?> get onUserChanged => _firebaseAuth!.userChanges();
 
   @override
-  Future<User> currentUser() async {
+  Future<User?> currentUser() async {
     try {
-      return _firebaseAuth.currentUser;
+      return _firebaseAuth?.currentUser;
     } on Exception catch (_) {
       throw UnexpectedException();
     }
@@ -55,8 +55,8 @@ class FirebaseAuthService implements AuthService {
   @override
   Future<User> signInAnonymously() async {
     try {
-      final userCredential = await _firebaseAuth.signInAnonymously();
-      return userCredential.user;
+      final userCredential = await _firebaseAuth!.signInAnonymously();
+      return userCredential.user!;
     } on FirebaseAuthException catch (exception) {
       if (exception.code == 'operation-not-allowed') {
         throw SignInAnonymouslyOperationNotAllowedException(
@@ -68,9 +68,10 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(
+      String email, String password) async {
     try {
-      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+      final userCredential = await _firebaseAuth!.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -81,76 +82,66 @@ class FirebaseAuthService implements AuthService {
           throw SignInInvalidEmailException(
             message: 'Invalid email',
           );
-          break;
         case 'user-disabled':
           throw SignInUserDisabledException(
             message: 'This user is disabled',
           );
-          break;
         case 'user-not-found':
           throw SignInUserNotFoundException(
             message: 'A user corresponding to the given email does not exist',
           );
-          break;
         case 'wrong-password':
           throw SignInWrongPasswordException(
             message: 'Wrong password',
           );
-          break;
         case 'operation-not-allowed':
           throw SignInOperationNotAllowedException(
             message: 'Operation not allowed',
           );
-          break;
         default:
           throw UnexpectedException();
-          break;
       }
     }
   }
 
   @override
-  Future<User> createUserWithEmailAndPassword({
-    String name,
-    String lastName,
-    String email,
-    String password,
+  Future<User?> createUserWithEmailAndPassword({
+    required String name,
+    required String lastName,
+    required String email,
+    required String password,
   }) async {
     try {
-      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+      final userCredential =
+          await _firebaseAuth!.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      await userCredential.user.updateDisplayName(
+      await userCredential.user?.updateDisplayName(
         name + ' ' + lastName,
       );
-      await userCredential.user.reload();
-      return _firebaseAuth.currentUser;
+      await userCredential.user?.reload();
+      return _firebaseAuth!.currentUser;
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
         case 'email-already-in-use':
           throw SignUpEmailInUseException(
             message: 'An user for this email already exists',
           );
-          break;
         case 'invalid-email':
           throw SignUpInvalidEmailException(
             message: 'Invalid email',
           );
-          break;
         case 'operation-not-allowed':
           throw SignUpOperationNotAllowedException(
             message: 'Operation not allowed',
           );
-          break;
         case 'weak-password':
           throw SignUpWeakPasswordException(
             message: 'The password is too weak',
           );
-          break;
         default:
           throw UnexpectedException();
-          break;
       }
     }
   }
@@ -158,31 +149,28 @@ class FirebaseAuthService implements AuthService {
   @override
   Future<void> sendPasswordResetEmail(String email) async {
     try {
-      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      await _firebaseAuth!.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
         case 'user-not-found':
           throw PasswordResetUserNotFoundException(
             message: 'There is no user corresponding to the given email',
           );
-          break;
         case 'invalid-email':
           throw PasswordResetInvalidEmailException(
             message: 'Invalid email',
           );
-          break;
         default:
           throw UnexpectedException();
-          break;
       }
     }
   }
 
-  Future<User> _signInWithAService(SignInService service) async {
+  Future<User?> _signInWithAService(SignInService service) async {
     final firebaseCredential = await service.getFirebaseCredential();
     if (firebaseCredential != null) {
       try {
-        final userCredential = await _firebaseAuth.signInWithCredential(
+        final userCredential = await _firebaseAuth!.signInWithCredential(
           firebaseCredential,
         );
         _signInMethod = service;
@@ -193,31 +181,25 @@ class FirebaseAuthService implements AuthService {
             throw CredentialsInvalidException(
               message: 'Invalid credential',
             );
-            break;
           case 'operation-not-allowed':
             throw CredentialsOperationNotAllowedException(
               message: 'Operation not allowed',
             );
-            break;
           case 'user-disabled':
             throw CredentialsUserDisabledException(
               message: 'This user is disabled',
             );
-            break;
           case 'user-not-found':
             throw CredentialsUserNotFoundException(
               message:
                   'A user corresponding to the given credential does not exist',
             );
-            break;
           case 'wrong-password':
             throw CredentialsWrongPasswordException(
               message: 'Wrong password',
             );
-            break;
           default:
             throw UnexpectedException();
-            break;
         }
       }
     }
@@ -225,21 +207,21 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  Future<User> signInWithGoogle({GoogleSignIn googleLogin}) async {
+  Future<User?> signInWithGoogle({GoogleSignIn? googleLogin}) async {
     final googleService =
         _testingService ?? GoogleSignInService(signInMethod: googleLogin);
     return _signInWithAService(googleService);
   }
 
   @override
-  Future<User> signInWithFacebook({FacebookAuth facebookLogin}) async {
+  Future<User?> signInWithFacebook({FacebookAuth? facebookLogin}) async {
     final facebookService =
         _testingService ?? FacebookSignInService(signInMethod: facebookLogin);
     return _signInWithAService(facebookService);
   }
 
   @override
-  Future<User> signInWithApple({AppleSignInService appleLogin}) async {
+  Future<User?> signInWithApple({AppleSignInService? appleLogin}) async {
     final appleService = _testingService ?? AppleSignInService();
     return _signInWithAService(appleService);
   }
@@ -249,7 +231,7 @@ class FirebaseAuthService implements AuthService {
     try {
       await _signInMethod?.signOut();
       _signInMethod = null;
-      await _firebaseAuth.signOut();
+      await _firebaseAuth!.signOut();
     } on Exception {
       throw UnexpectedException();
     }
@@ -257,12 +239,14 @@ class FirebaseAuthService implements AuthService {
 
   @override
   Future<bool> changeProfile(
-      {String firstName, String lastName, String photoURL}) async {
+      {String? firstName, String? lastName, String? photoURL}) async {
     try {
-      final user = _firebaseAuth.currentUser;
-      await user.updateDisplayName('$firstName $lastName');
+      final user = _firebaseAuth!.currentUser;
+      if (firstName != null && lastName != null) {
+        await user!.updateDisplayName('$firstName $lastName');
+      }
       if (photoURL != null) {
-        await user.updatePhotoURL(photoURL);
+        await user!.updatePhotoURL(photoURL);
       }
       return true;
     } on Exception {
@@ -273,8 +257,8 @@ class FirebaseAuthService implements AuthService {
   @override
   Future<bool> deleteAccount() async {
     try {
-      final user = _firebaseAuth.currentUser;
-      await user.delete();
+      final user = _firebaseAuth!.currentUser;
+      await user!.delete();
       return true;
     } on FirebaseAuthException catch (exception) {
       switch (exception.code) {
@@ -282,10 +266,8 @@ class FirebaseAuthService implements AuthService {
           throw DeleteAccountRequiresRecentLoginException(
             message: 'Requires recent login',
           );
-          break;
         default:
           throw UnexpectedException();
-          break;
       }
     }
   }

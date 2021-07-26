@@ -1,14 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:somnio_firebase_authentication/src/sign_in_services/apple/apple_credentials.dart';
 import 'package:somnio_firebase_authentication/src/sign_in_services/apple/apple_sign_in_service.dart';
-import '.././mocks/auth_mocks.dart';
 import 'package:mockito/mockito.dart';
+import 'apple_sign_in_service_test.mocks.dart';
 
+@GenerateMocks([
+  AppleCredentials,
+])
 void main() {
   group('Apple sign in service /', () {
-    AppleSignInService _appleSignInService;
-    AppleCredentials _appleCredentials;
+    AppleSignInService? _appleSignInService;
+    AppleCredentials? _appleCredentials;
 
     setUp(() {
       _appleCredentials = MockAppleCredentials();
@@ -26,29 +30,29 @@ void main() {
         state: 'state',
       );
 
-      when(_appleCredentials.getAppleCredentials([
+      when(_appleCredentials!.getAppleCredentials([
         AppleIDAuthorizationScopes.email,
         AppleIDAuthorizationScopes.fullName
       ], 'abcd1234'))
           .thenAnswer((_) async => credential);
 
-      final obtainedCredential = await _appleSignInService
+      final obtainedCredential = await _appleSignInService!
           .getFirebaseCredential(testingNonce: 'abcd1234');
 
-      expect(obtainedCredential.idToken, credential.identityToken);
+      expect(obtainedCredential!.idToken, credential.identityToken);
       expect(obtainedCredential.rawNonce, 'abcd1234');
     });
 
     test('Cancelled by user', () async {
-      when(_appleCredentials.getAppleCredentials([
+      when(_appleCredentials!.getAppleCredentials([
         AppleIDAuthorizationScopes.email,
         AppleIDAuthorizationScopes.fullName
       ], 'abcd1234'))
           .thenAnswer((_) async => null);
 
       expect(
-          await _appleSignInService.getFirebaseCredential(
-              testingNonce: 'abcd1234'),
+          await _appleSignInService!
+              .getFirebaseCredential(testingNonce: 'abcd1234'),
           null);
     });
   });

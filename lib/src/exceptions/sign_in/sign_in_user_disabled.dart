@@ -4,5 +4,5 @@ class SignInUserDisabledException implements SignInException {
   String code = 'siweap_user_disabled';
   String message;
 
-  SignInUserDisabledException({this.message});
+  SignInUserDisabledException({required this.message});
 }

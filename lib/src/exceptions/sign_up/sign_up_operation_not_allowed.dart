@@ -4,5 +4,5 @@ class SignUpOperationNotAllowedException implements SignUpException {
   String code = 'cuweap_operation_not_allowed';
   String message;
 
-  SignUpOperationNotAllowedException({this.message});
+  SignUpOperationNotAllowedException({required this.message});
 }

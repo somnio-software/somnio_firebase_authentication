@@ -4,5 +4,5 @@ class CredentialsUserDisabledException implements CredentialsException {
   String code = 'siwas_user_disabled';
   String message;
 
-  CredentialsUserDisabledException({this.message});
+  CredentialsUserDisabledException({required this.message});
 }

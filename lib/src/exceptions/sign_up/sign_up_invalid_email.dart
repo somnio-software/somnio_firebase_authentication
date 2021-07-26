@@ -4,5 +4,5 @@ class SignUpInvalidEmailException implements SignUpException {
   String code = 'cuweap_invalid_email';
   String message;
 
-  SignUpInvalidEmailException({this.message});
+  SignUpInvalidEmailException({required this.message});
 }

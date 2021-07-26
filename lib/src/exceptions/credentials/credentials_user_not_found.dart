@@ -4,5 +4,5 @@ class CredentialsUserNotFoundException implements CredentialsException {
   String code = 'siwas_user_not_found';
   String message;
 
-  CredentialsUserNotFoundException({this.message});
+  CredentialsUserNotFoundException({required this.message});
 }

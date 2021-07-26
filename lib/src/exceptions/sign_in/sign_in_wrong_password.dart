@@ -4,5 +4,5 @@ class SignInWrongPasswordException implements SignInException {
   String code = 'siweap_wrong_password';
   String message;
 
-  SignInWrongPasswordException({this.message});
+  SignInWrongPasswordException({required this.message});
 }

@@ -4,5 +4,5 @@ class PasswordResetUserNotFoundException implements PasswordResetException {
   String code = 'spre_user_not_found';
   String message;
 
-  PasswordResetUserNotFoundException({this.message});
+  PasswordResetUserNotFoundException({required this.message});
 }

@@ -4,5 +4,5 @@ class PasswordResetInvalidEmailException implements PasswordResetException {
   String code = 'spre_invalid_email';
   String message;
 
-  PasswordResetInvalidEmailException({this.message});
+  PasswordResetInvalidEmailException({required this.message});
 }

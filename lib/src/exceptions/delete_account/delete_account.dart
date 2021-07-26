@@ -2,5 +2,5 @@ class DeleteAccountException implements Exception {
   String code;
   String message;
 
-  DeleteAccountException({this.code, this.message});
+  DeleteAccountException({required this.code, required this.message});
 }
